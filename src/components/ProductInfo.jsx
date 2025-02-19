@@ -43,7 +43,7 @@ const ProductInfo = () => {
 
   useEffect(() => {
     fetchProductData();
-  }, [id]);
+  }, [id,fetchProductData]);
 
   if (loading)
     return (
