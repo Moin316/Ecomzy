@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { add, remove } from "../redux/Slices/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,10 +11,7 @@ const ProductInfo = () => {
   const [post, setPost] = useState(null);
   const dispatch = useDispatch();
 
-  // Now access the cart array directly
-  const cart = useSelector((state) => state.cart); // It's just an array now
-
-  // Check if the product is in the cart
+  const cart = useSelector((state) => state.cart);
   const productInCart = post ? cart.some((item) => item.id === post.id) : false;
 
   const addToCart = () => {
@@ -27,9 +24,8 @@ const ProductInfo = () => {
     toast.error("Item removed from Cart");
   };
 
-  async function fetchProductData() {
+  const fetchProductData = useCallback(async () => {
     setLoading(true);
-
     try {
       const res = await fetch(API_URL);
       const data = await res.json();
@@ -39,11 +35,11 @@ const ProductInfo = () => {
       setPost(null);
     }
     setLoading(false);
-  }
+  }, [API_URL]);
 
   useEffect(() => {
     fetchProductData();
-  }, [id,fetchProductData]);
+  }, [id, fetchProductData]); // Dependencies now include fetchProductData and id
 
   if (loading)
     return (
